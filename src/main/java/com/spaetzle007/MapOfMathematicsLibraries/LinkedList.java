@@ -69,13 +69,13 @@ public class LinkedList {
 			String sup=list.get(i).getSupLink();
 			
 			//subnames von unten
-			if(!list.get(i).getName().equals("Start")) {
+			if(!list.get(i).getName().equals("Mathematik")) {
 				list.get(search(sup)).addLinks(new LinkedString(list.get(i).getName(), (byte)1));
 			} 
 			
 			//equalnames hin und zurück
 			for(int j=i+1; j<list.size(); j++) {
-				if(list.get(i).getSupName().equals(list.get(j).getSupName()) && !list.get(i).getName().equals("Start") && !list.get(j).getName().equals("Start")) {
+				if(list.get(i).getSupName().equals(list.get(j).getSupName()) && !list.get(i).getName().equals("Mathematik") && !list.get(j).getName().equals("Mathematik")) {
 					list.get(i).addLinks(new LinkedString(list.get(j).getName(), (byte)0));
 					list.get(j).addLinks(new LinkedString(list.get(i).getName(), (byte)0));
 				}
@@ -88,7 +88,7 @@ public class LinkedList {
 			}
 			list.get(i).sortLinks();
 		}
-		list.get(search("Start")).addLinks(new LinkedString("Start", (byte)0));
+		list.get(search("Mathematik")).addLinks(new LinkedString("Mathematik", (byte)0));
 	}
 	*/
 	/**
@@ -211,7 +211,7 @@ public class LinkedList {
 	public ArrayList<String> getSubLinks(Linked actual) {
 		ArrayList<String> ret=new ArrayList<String>();
 		for(int i=0; i<list.size(); i++) {
-			if(list.get(i).getSupLink().equals(actual.getName()) && !list.get(i).getName().equals("Start")) {
+			if(list.get(i).getSupLink().equals(actual.getName()) && !list.get(i).getName().equals("Mathematik")) {
 				ret.add(list.get(i).getName());
 			} 
 		}
@@ -220,7 +220,7 @@ public class LinkedList {
 	public ArrayList<String> getEqualLinks(Linked actual) {
 		ArrayList<String> ret=new ArrayList<String>();
 		for(int i=0; i<list.size(); i++) {
-			if(list.get(i).getSupLink().equals(actual.getSupLink()) && !list.get(i).getName().equals("Start") && !list.get(i).getName().equals(actual.getName())) {
+			if(list.get(i).getSupLink().equals(actual.getSupLink()) && !list.get(i).getName().equals("Mathematik") && !list.get(i).getName().equals(actual.getName())) {
 				ret.add(list.get(i).getName());
 			}
 		}

@@ -65,7 +65,7 @@ public class Linked {
 	public void addLink(LinkedString connection) {
 		boolean übernehmen=true;
 		
-		if(name=="Start" || connection.getName().equals(name) || links.contains(connection)) {
+		if(name=="Mathematik" || connection.getName().equals(name) || links.contains(connection)) {
 			übernehmen=false;
 		}
 			
@@ -110,7 +110,11 @@ public class Linked {
 		while(!str.substring(i, i+"</title>".length()).equals("</title>")) {
 			i++;
 		}
-		name=str.substring(i0, i);
+		if(str.substring(i0, i).equals("Start")) {
+			name="Mathematik";
+		}else {
+			name=str.substring(i0, i);
+		}
 		i+="</title>".length();
 		
 		//Text einlesen
