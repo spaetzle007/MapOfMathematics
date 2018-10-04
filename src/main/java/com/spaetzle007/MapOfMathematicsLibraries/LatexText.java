@@ -18,8 +18,6 @@ import org.scilab.forge.jlatexmath.TeXIcon;
  * Zeilenwechsel mit "\\", Formeln einrahmen mit "\\("..."\\)"
  * Zustand 3 - EditMode (für MOMEditMode) (Desktop)
  * Zeilenwechsel mit "\n"
- * Test1234
- * Achtung Änderung in dem Kommentar
  * 
  * Zu berücksichtigen: 
  * -Bei Umwandlung von "\\" in "\n" können "\\" nicht einfach ersetzt werden:
