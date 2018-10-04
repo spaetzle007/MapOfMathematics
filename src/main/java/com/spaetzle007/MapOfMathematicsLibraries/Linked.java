@@ -5,7 +5,7 @@ public class Linked {
 	private String name;
 	private LatexText text;
 	private String suplink;
-	private ArrayList<String> links;
+	private ArrayList<LinkedString> links;
 	
 	/**
 	 * Default-Konstruktor
@@ -14,7 +14,7 @@ public class Linked {
 		name = "";
 		text = new LatexText("", 0);
 		suplink="";
-		links=new ArrayList<String>();
+		links=new ArrayList<LinkedString>();
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class Linked {
 	 * Linked aus Text einlesen
 	 */
 	public Linked(String input) throws LinkedParseException {
-		links=new ArrayList<String>();
+		links=new ArrayList<LinkedString>();
 		decodeXML(input);
 		
 		sortLinks();
@@ -50,9 +50,9 @@ public class Linked {
 	public String getSupLink() {return suplink;}
 	public void setSupLink(String str) {suplink=str;}
 	
-	public ArrayList<String> getLinks() {return links;}
-	public void setLinks(ArrayList<String> bsp) {this.links=bsp;}
-	public void removeLinks(String connection) {
+	public ArrayList<LinkedString> getLinks() {return links;}
+	public void setLinks(ArrayList<LinkedString> bsp) {this.links=bsp;}
+	public void removeLink(String connection) {
 		for(int i=0; i<links.size(); i++) {
 			//if(links.get(i).getString().equals(connection)) {
 			if(links.get(i).equals(connection)) {
@@ -60,12 +60,12 @@ public class Linked {
 			}
 		}
 	}
-	public void removeLinks(int pos) {this.links.remove(pos);}
-	public void setLinks(int i, String str) {links.set(i, str);}
-	public void addLinks(String connection) {
+	public void removeLink(int pos) {this.links.remove(pos);}
+	public void setLink(int i, LinkedString str) {links.set(i, str);}
+	public void addLink(LinkedString connection) {
 		boolean übernehmen=true;
 		
-		if(name=="Start" || connection.equals(name) || links.contains(connection)) {
+		if(name=="Start" || connection.getName().equals(name) || links.contains(connection)) {
 			übernehmen=false;
 		}
 			
@@ -73,10 +73,10 @@ public class Linked {
 			this.links.add(connection);
 		}
 	}
-	public boolean hasLinks(String name) {
+	public boolean hasLink(LinkedString name) {
 		boolean ret=false;
 		for(int i=0; i<links.size(); i++) {
-			if(links.get(i).equals(name)) {
+			if(links.get(i).getName().equals(name)) {
 				ret=true;
 			}
 		}
@@ -92,7 +92,7 @@ public class Linked {
 		ret+="\t\t<text>"+text.getText()+"</text>\n";
 		ret+="\t\t<suplink>"+suplink+"</suplink>\n";
 		for(int i=0; i<links.size(); i++) {
-			ret+="\t\t<link>"+links.get(i)+"</link>\n";
+			ret+="\t\t<link>"+links.get(i).getName()+";"+links.get(i).getType()+"</link>\n";
 		}
 		ret+="\t</Linked>\n";
 		return ret;
@@ -147,10 +147,15 @@ public class Linked {
 				throw new LinkedParseException("Falsches Format");
 			}
 			i0=i;
+			int i1=0;
 			while(!str.substring(i, i+"</link>".length()).equals("</link>")) {
 				i++;
+				if(str.charAt(i)==';') {i1=i;}
 			}
-			links.add(str.substring(i0, i));
+			if(i1==0) {throw new LinkedParseException("Falsches Format");}
+			
+			
+			links.add(new LinkedString(str.substring(i0, i1), Byte.parseByte(str.substring(i1+1, i))));
 			i+="</link>".length();
 		}
 		
@@ -163,13 +168,13 @@ public class Linked {
 	}
 	
 	public void sortLinks() {
-		ArrayList<String> input=links;
-		ArrayList<String> output=new ArrayList<String>();
-		String erster;
+		ArrayList<LinkedString> input=links;
+		ArrayList<LinkedString> output=new ArrayList<LinkedString>();
+		LinkedString erster;
 		while(!input.isEmpty()) {
 			erster=input.get(0);
 			for(int i=1; i<input.size();i++) {
-				if(input.get(i).compareToIgnoreCase(erster)<=0) {
+				if(input.get(i).getName().compareToIgnoreCase(erster.getName())<=0 && input.get(i).getType()<=erster.getType()) {
 					erster=input.get(i);
 				}
 			}

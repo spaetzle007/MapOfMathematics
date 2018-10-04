@@ -61,34 +61,34 @@ public class LinkedList {
 	 * Name und Supname unverändert -> Arbeite nur damit
 	 */
 	/*		//Kann weg
-	public void calculateConnecteds() {
+	public void calculateLinks() {
 		for(int i=0; i<list.size(); i++) {
-			list.get(i).clearConnecteds();
+			list.get(i).clearLinks();
 		}
 		for(int i=0; i<list.size(); i++) {		//Iteration über LinkedList
 			String sup=list.get(i).getSupLink();
 			
 			//subnames von unten
 			if(!list.get(i).getName().equals("Start")) {
-				list.get(search(sup)).addConnected(new LinkedString(list.get(i).getName(), (byte)1));
+				list.get(search(sup)).addLinks(new LinkedString(list.get(i).getName(), (byte)1));
 			} 
 			
 			//equalnames hin und zurück
 			for(int j=i+1; j<list.size(); j++) {
 				if(list.get(i).getSupName().equals(list.get(j).getSupName()) && !list.get(i).getName().equals("Start") && !list.get(j).getName().equals("Start")) {
-					list.get(i).addConnected(new LinkedString(list.get(j).getName(), (byte)0));
-					list.get(j).addConnected(new LinkedString(list.get(i).getName(), (byte)0));
+					list.get(i).addLinks(new LinkedString(list.get(j).getName(), (byte)0));
+					list.get(j).addLinks(new LinkedString(list.get(i).getName(), (byte)0));
 				}
 			}
 			
 			//crossnames (zur Sicherheit)
 			ArrayList<LinkedString> cross=list.get(i).getCrossLinks();
 			for(int j=0; j<cross.size(); j++) {
-				list.get(search(cross.get(j).getName())).addConnected(new LinkedString(cross.get(j).getName(), (byte)2));
+				list.get(search(cross.get(j).getName())).addLinks(new LinkedString(cross.get(j).getName(), (byte)2));
 			}
-			list.get(i).sortConnected();
+			list.get(i).sortLinks();
 		}
-		list.get(search("Start")).addConnected(new LinkedString("Start", (byte)0));
+		list.get(search("Start")).addLinks(new LinkedString("Start", (byte)0));
 	}
 	*/
 	/**
@@ -96,28 +96,28 @@ public class LinkedList {
 	 * (Aber nur für einen Linked)
 	 */
 	/*//Kann weg
-	public void calculateConnecteds(Linked actual) {
-		list.get(search(actual.getSupLink())).addConnected(new LinkedString(actual.getName(), (byte)1));
+	public void calculateLinks(Linked actual) {
+		list.get(search(actual.getSupLink())).addLinks(new LinkedString(actual.getName(), (byte)1));
 		
-		for(int i=0; i<actual.getConnecteds().size(); i++) {
+		for(int i=0; i<actual.getLinks().size(); i++) {
 			//Equalnames: Bijektiv machen(mit gleichem supname)
-			if(actual.getConnecteds().get(i).getType()==(byte)0) {
-				list.get(search(actual.getConnecteds().get(i).getName())).addConnected(new LinkedString(actual.getName(), (byte)0));
+			if(actual.getLinks().get(i).getType()==(byte)0) {
+				list.get(search(actual.getLinks().get(i).getName())).addLinks(new LinkedString(actual.getName(), (byte)0));
 			}
 			//Crossnames: Bijektiv machen
-			if(actual.getConnecteds().get(i).getType()==(byte)2) {
-				list.get(search(actual.getConnecteds().get(i).getName())).addConnected(new LinkedString(actual.getName(), (byte)2));
+			if(actual.getLinks().get(i).getType()==(byte)2) {
+				list.get(search(actual.getLinks().get(i).getName())).addLinks(new LinkedString(actual.getName(), (byte)2));
 			}
 		}
 	}
 	*/
 	/*
-	public void changeConnectedsName(Linked before, Linked actual) {
+	public void changeLinksName(Linked before, Linked actual) {
 		if(!before.getName().equals(actual.getName())) {
 			for(int i=0; i<list.size(); i++) {
-				for(int j=0; j<list.get(i).getConnecteds().size(); j++) {
-					if(list.get(i).getConnecteds().get(j).getName().equals(before.getName())) {
-						list.get(i).setConnected(j, new LinkedString(actual.getName(), list.get(i).getConnecteds().get(j).getType()));
+				for(int j=0; j<list.get(i).getLinks().size(); j++) {
+					if(list.get(i).getLinks().get(j).getName().equals(before.getName())) {
+						list.get(i).setLinks(j, new LinkedString(actual.getName(), list.get(i).getLinks().get(j).getType()));
 					}
 				}
 			}
@@ -126,12 +126,12 @@ public class LinkedList {
 	*/
 	
 	//Sinn davon?
-	public void changeConnectedsName(Linked before, Linked actual) {
+	public void changeLinksName(Linked before, Linked actual) {
 		if(!before.getName().equals(actual.getName())) {
 			for(int i=0; i<list.size(); i++) {
-				for(int j=0; j<list.get(i).getConnecteds().size(); j++) {
-					if(list.get(i).getConnecteds().get(j).equals(before.getName())) {
-						list.get(i).setConnected(j, actual.getName());
+				for(int j=0; j<list.get(i).getLinks().size(); j++) {
+					if(list.get(i).getLinks().get(j).equals(before.getName())) {
+						list.get(i).setLink(j, new LinkedString(actual.getName(), (byte)0));
 					}
 				}
 			}
@@ -220,7 +220,7 @@ public class LinkedList {
 	public ArrayList<String> getEqualLinks(Linked actual) {
 		ArrayList<String> ret=new ArrayList<String>();
 		for(int i=0; i<list.size(); i++) {
-			if(list.get(i).getSupLink().equals(actual.getSupLink()) && !list.get(i).getName().equals("Start")) {
+			if(list.get(i).getSupLink().equals(actual.getSupLink()) && !list.get(i).getName().equals("Start") && !list.get(i).getName().equals(actual.getName())) {
 				ret.add(list.get(i).getName());
 			}
 		}
