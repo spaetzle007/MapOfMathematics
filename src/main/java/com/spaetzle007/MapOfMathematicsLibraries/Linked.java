@@ -104,7 +104,7 @@ public class Linked {
 		if(str.substring(0, "<Linked><title>".length()).equals("<Linked><title>")) {
 			i+="<Linked><title>".length();
 		} else {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nTitle-String falsch");
 		}
 		i0=i;
 		while(!str.substring(i, i+"</title>".length()).equals("</title>")) {
@@ -117,7 +117,7 @@ public class Linked {
 		if(str.substring(i, i+"<text>".length()).equals("<text>")) {
 			i+="<text>".length();
 		} else {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nText-String falsch bei Linked "+name);
 		}
 		i0=i;
 		while(!str.substring(i, i+"</text>".length()).equals("</text>")) {
@@ -130,7 +130,7 @@ public class Linked {
 		if(str.substring(i, i+"<suplink>".length()).equals("<suplink>")) {
 			i+="<suplink>".length();
 		} else {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nSupstring falsch bei Linked "+name);
 		}
 		i0=i;
 		while(!str.substring(i, i+"</suplink>".length()).equals("</suplink>")) {
@@ -144,7 +144,7 @@ public class Linked {
 			if(str.substring(i, i+"<link>".length()).equals("<link>")) {
 				i+="<link>".length();
 			} else {
-				throw new LinkedParseException("Falsches Format");
+				throw new LinkedParseException("Falsches Format:\nLink falsch bei Linked "+name);
 			}
 			i0=i;
 			int i1=0;
@@ -152,7 +152,7 @@ public class Linked {
 				i++;
 				if(str.charAt(i)==';') {i1=i;}
 			}
-			if(i1==0) {throw new LinkedParseException("Falsches Format");}
+			if(i1==0) {throw new LinkedParseException("Falsches Format:\nLink-Ausgangsstring falsch bei Linked "+name);}
 			
 			
 			links.add(new LinkedString(str.substring(i0, i1), Byte.parseByte(str.substring(i1+1, i))));
@@ -163,7 +163,7 @@ public class Linked {
 		if(str.substring(i, i+"</Linked>".length()).equals("</Linked>")) {
 			
 		} else {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nLinked-Ausgangsstring falsch bei Linked "+name);
 		}
 	}
 	

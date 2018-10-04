@@ -153,14 +153,14 @@ public class LinkedList {
 	 * Lösche alle Tabs - Diese sind nur zur Übersicht im xml-Format
 	 */
 	private void decodeXML(String input) throws LinkedParseException {
-		String str=input.replace("\t", "");
+		String str=input.replace("\t", "").replace("\n", "");
 		
 		int i=0;
 		//Eingangsstring testen
 		if(str.substring(0, "<LinkedList>".length()).equals("<LinkedList>")) {
 			i+="<LinkedList>".length();
 		} else {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nAnfangsstring LinkedList falsch");
 		}
 		
 		while(i<str.length()-"</LinkedList>".length()) {
@@ -168,7 +168,7 @@ public class LinkedList {
 			if(str.substring(i, i+"<Linked>".length()).equals("<Linked>")) {
 				i+="<Linked>".length();
 			} else {
-				throw new LinkedParseException("Falsches Format");
+				throw new LinkedParseException("Falsches Format:\nAnfangsstring Linked falsch\nPosition: "+i);
 			}
 			
 			while(!str.substring(i, i+"</Linked>".length()).equals("</Linked>")) {
@@ -185,7 +185,7 @@ public class LinkedList {
 		}
 		//Ausgangsstring testen
 		if(!str.substring(i, i+"</LinkedList>".length()).equals("</LinkedList>")) {
-			throw new LinkedParseException("Falsches Format");
+			throw new LinkedParseException("Falsches Format:\nEndstring LinkedList falsch");
 		}
 	}
 	

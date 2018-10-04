@@ -188,12 +188,12 @@ public class DataHandler {
 	private String getText() {
 		String code="";
 		try {
-			BufferedReader read=new BufferedReader(new InputStreamReader(new FileInputStream(database), "UTF8"));
+			BufferedReader read=new BufferedReader(new InputStreamReader(new FileInputStream(database), StandardCharsets.UTF_8));
 			//BufferedReader read=new BufferedReader(new FileReader(database));
 			//BufferedReader read=new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(database)));
 			String subcode;
 			while((subcode = read.readLine())!=null) {
-				code+=subcode;
+				code+="\n"+subcode;
 			}
 			
 			read.close();
