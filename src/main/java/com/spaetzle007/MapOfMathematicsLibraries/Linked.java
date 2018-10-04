@@ -5,7 +5,7 @@ public class Linked {
 	private String name;
 	private LatexText text;
 	private String suplink;
-	private ArrayList<String> connected;
+	private ArrayList<String> links;
 	
 	/**
 	 * Default-Konstruktor
@@ -14,7 +14,7 @@ public class Linked {
 		name = "";
 		text = new LatexText("", 0);
 		suplink="";
-		connected=new ArrayList<String>();
+		links=new ArrayList<String>();
 	}
 
 	/**
@@ -25,16 +25,16 @@ public class Linked {
 		this.name=l.getName();
 		this.text = l.getLatexText();
 		this.suplink=l.getSupLink();
-		this.connected=l.getConnecteds();
+		this.links=l.getLinks();
 	}
 	/**
 	 * Linked aus Text einlesen
 	 */
 	public Linked(String input) throws LinkedParseException {
-		connected=new ArrayList<String>();
+		links=new ArrayList<String>();
 		decodeXML(input);
 		
-		sortConnected();
+		sortLinks();
 	}
 
 	public String getName() {return name;}
@@ -50,39 +50,39 @@ public class Linked {
 	public String getSupLink() {return suplink;}
 	public void setSupLink(String str) {suplink=str;}
 	
-	public ArrayList<String> getConnecteds() {return connected;}
-	public void setConnecteds(ArrayList<String> bsp) {this.connected=bsp;}
-	public void removeConnected(String connection) {
-		for(int i=0; i<connected.size(); i++) {
-			//if(connected.get(i).getString().equals(connection)) {
-			if(connected.get(i).equals(connection)) {
-				connected.remove(i);
+	public ArrayList<String> getLinks() {return links;}
+	public void setLinks(ArrayList<String> bsp) {this.links=bsp;}
+	public void removeLinks(String connection) {
+		for(int i=0; i<links.size(); i++) {
+			//if(links.get(i).getString().equals(connection)) {
+			if(links.get(i).equals(connection)) {
+				links.remove(i);
 			}
 		}
 	}
-	public void removeConnected(int pos) {this.connected.remove(pos);}
-	public void setConnected(int i, String str) {connected.set(i, str);}
-	public void addConnected(String connection) {
+	public void removeLinks(int pos) {this.links.remove(pos);}
+	public void setLinks(int i, String str) {links.set(i, str);}
+	public void addLinks(String connection) {
 		boolean übernehmen=true;
 		
-		if(name=="Start" || connection.equals(name) || connected.contains(connection)) {
+		if(name=="Start" || connection.equals(name) || links.contains(connection)) {
 			übernehmen=false;
 		}
 			
 		if(übernehmen) {
-			this.connected.add(connection);
+			this.links.add(connection);
 		}
 	}
-	public boolean hasConnected(String name) {
+	public boolean hasLinks(String name) {
 		boolean ret=false;
-		for(int i=0; i<connected.size(); i++) {
-			if(connected.get(i).equals(name)) {
+		for(int i=0; i<links.size(); i++) {
+			if(links.get(i).equals(name)) {
 				ret=true;
 			}
 		}
 		return ret;
 	}
-	public void clearConnecteds() {this.connected.clear();}
+	public void clearLinks() {this.links.clear();}
 
 	
 	public String convertToXML() {
@@ -91,8 +91,8 @@ public class Linked {
 		ret+="\t\t<title>"+name+"</title>\n";
 		ret+="\t\t<text>"+text.getText()+"</text>\n";
 		ret+="\t\t<suplink>"+suplink+"</suplink>\n";
-		for(int i=0; i<connected.size(); i++) {
-			ret+="\t\t<link>"+connected.get(i)+"</link>\n";
+		for(int i=0; i<links.size(); i++) {
+			ret+="\t\t<link>"+links.get(i)+"</link>\n";
 		}
 		ret+="\t</Linked>\n";
 		return ret;
@@ -139,7 +139,7 @@ public class Linked {
 		suplink=str.substring(i0, i);
 		i+="</suplink>".length();
 		
-		//Connecteds einlesen
+		//Linkss einlesen
 		while(i<str.length()-"</Linked>".length()) {
 			if(str.substring(i, i+"<link>".length()).equals("<link>")) {
 				i+="<link>".length();
@@ -150,7 +150,7 @@ public class Linked {
 			while(!str.substring(i, i+"</link>".length()).equals("</link>")) {
 				i++;
 			}
-			connected.add(str.substring(i0, i));
+			links.add(str.substring(i0, i));
 			i+="</link>".length();
 		}
 		
@@ -162,8 +162,8 @@ public class Linked {
 		}
 	}
 	
-	public void sortConnected() {
-		ArrayList<String> input=connected;
+	public void sortLinks() {
+		ArrayList<String> input=links;
 		ArrayList<String> output=new ArrayList<String>();
 		String erster;
 		while(!input.isEmpty()) {
@@ -176,7 +176,7 @@ public class Linked {
 			output.add(erster);
 			input.remove(erster);
 		}
-		connected=output;
+		links=output;
 	}
 	
 }
