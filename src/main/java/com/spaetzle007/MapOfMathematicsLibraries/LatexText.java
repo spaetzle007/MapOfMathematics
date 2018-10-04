@@ -1,12 +1,4 @@
 package com.spaetzle007.MapOfMathematicsLibraries;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
-
-import org.scilab.forge.jlatexmath.ParseException;
-import org.scilab.forge.jlatexmath.TeXConstants;
-import org.scilab.forge.jlatexmath.TeXFormula;
-import org.scilab.forge.jlatexmath.TeXIcon;
 
 /**
  * Umwandler für verschiedene Textdarstellungen
@@ -57,21 +49,12 @@ public class LatexText {
 	/**
 	 * JLatexMath-Darstellung des Texts (für Verwendung in Desktop-App)
 	 */
-	public TeXIcon getJLatexMathRepresentation() {
+	public String getJLatexMathRepresentation() {
 		String ret="\\text{"+text+"}";
 		ret=replaceExceptOfBeginEnd(ret, "}\\\\\\text{");
 		
-		TeXFormula  formula = null;
-		try {
-			formula = new TeXFormula(ret);
-		} catch (ParseException f) {
-			formula=new TeXFormula("\\textbf{Ungültige LaTeX-Eingabe!}");
-		}
-				
-		TeXIcon icon = formula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 17);
-		BufferedImage img = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-		icon.paintIcon(new JLabel(), img.getGraphics(), 0, 0);
-		return icon;
+		
+		return ret;
 	}
 	/**
 	 * Darstellung des Texts für Bearbeitung in MOMEdit.EditMode

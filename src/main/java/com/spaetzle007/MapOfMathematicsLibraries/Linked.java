@@ -1,6 +1,5 @@
 package com.spaetzle007.MapOfMathematicsLibraries;
 import java.util.ArrayList;
-import org.scilab.forge.jlatexmath.TeXIcon;
 
 public class Linked {
 	private String name;
@@ -44,7 +43,7 @@ public class Linked {
 	public LatexText getLatexText() {return text;}
 	public void setLatexText(LatexText text) {this.text = text;}
 	public String getText() {return text.getText();}
-	public TeXIcon getJLatexMathRepresentation() {return text.getJLatexMathRepresentation();}
+	public String getJLatexMathRepresentation() {return text.getJLatexMathRepresentation();}
 	public String getLatexViewRepresentation() {return text.getLatexViewRepresentation();}
 	public String getEditModeRepresentation() {return text.getEditModeRepresentation();}
 	
