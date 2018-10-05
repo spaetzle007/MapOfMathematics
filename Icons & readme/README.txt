@@ -38,6 +38,7 @@ Ansichtsmenü
  -"Dbx-Synchro": Vorzeitige Dropbox-Synchronisierung durchführen. Normalerweise nicht benötigt.
  
 Editiermenü
+-Warnung: Alle Änderungen werden direkt gespeichert
 -Eingabe von Titel, Text und Links des ausgewählten Eintrags
 -Mit Buttons speichern, Testansicht und zurückkehren zum Ansichtsmenü möglich
  -"Speichern"-Button speichert nur programmintern, Upload bzw Ändern von "MOM.txt" zusätzlich nötig

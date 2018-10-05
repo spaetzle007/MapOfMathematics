@@ -33,17 +33,29 @@ public class LinkedList {
 	}
 	
 	public Linked get(int i) {return list.get(i);}
+	public void add(Linked link) {list.add(link);}
+	public void set(int pos, Linked link) {list.set(pos, link);}
 	public int size() {return list.size();}
-	public void remove(String name) {
+	public void removeLinked(String name) {
+		//Position bestimmen
+		int pos=0;
 		for(int i=0; i<list.size(); i++) {
 			if(list.get(i).getName().equals(name)) {
-				list.remove(i);
+				pos=i;
+				break;
+			}
+		}
+		//Linked löschen
+		list.remove(pos);
+		//Verknüpfungen zum Eintrag löschen
+		for(int i=0; i<list.size(); i++) {
+			for(int j=0; j<list.get(i).getLinks().size(); i++) {
+				if(list.get(i).getLinks().get(j).getName().equals(name)) {
+					list.get(i).removeOnlyThisLink(list.get(i).getLinks().get(j).getName());
+				}
 			}
 		}
 	}
-	public void add(Linked link) {list.add(link);}
-	public void set(int pos, Linked link) {list.set(pos, link);}
-	
 	public int search(String name) {
 		int pos=-1;
 		for(int i=0; i<list.size(); i++) {
@@ -54,85 +66,46 @@ public class LinkedList {
 		return pos;
 	}
 	
-	/**
-	 * Anhand von Supnames equalnames und subnames berechnen
-	 * equalnames berechnen: Bei gleichem Supname aktueller Name als Link eintragen
-	 * subnames berechnen: Von Subnames aus machen
-	 * Name und Supname unverändert -> Arbeite nur damit
-	 */
-	/*		//Kann weg
-	public void calculateLinks() {
-		for(int i=0; i<list.size(); i++) {
-			list.get(i).clearLinks();
-		}
-		for(int i=0; i<list.size(); i++) {		//Iteration über LinkedList
-			String sup=list.get(i).getSupLink();
-			
-			//subnames von unten
-			if(!list.get(i).getName().equals("Mathematik")) {
-				list.get(search(sup)).addLinks(new LinkedString(list.get(i).getName(), (byte)1));
-			} 
-			
-			//equalnames hin und zurück
-			for(int j=i+1; j<list.size(); j++) {
-				if(list.get(i).getSupName().equals(list.get(j).getSupName()) && !list.get(i).getName().equals("Mathematik") && !list.get(j).getName().equals("Mathematik")) {
-					list.get(i).addLinks(new LinkedString(list.get(j).getName(), (byte)0));
-					list.get(j).addLinks(new LinkedString(list.get(i).getName(), (byte)0));
-				}
-			}
-			
-			//crossnames (zur Sicherheit)
-			ArrayList<LinkedString> cross=list.get(i).getCrossLinks();
-			for(int j=0; j<cross.size(); j++) {
-				list.get(search(cross.get(j).getName())).addLinks(new LinkedString(cross.get(j).getName(), (byte)2));
-			}
-			list.get(i).sortLinks();
-		}
-		list.get(search("Mathematik")).addLinks(new LinkedString("Mathematik", (byte)0));
-	}
-	*/
-	/**
-	 * Verknüpfungen aktualisieren
-	 * (Aber nur für einen Linked)
-	 */
-	/*//Kann weg
-	public void calculateLinks(Linked actual) {
-		list.get(search(actual.getSupLink())).addLinks(new LinkedString(actual.getName(), (byte)1));
+	public void removeLink(Linked actual, LinkedString link) {
+		//Link löschen
+		list.get(search(actual.getName())).removeOnlyThisLink(link.getName());
 		
-		for(int i=0; i<actual.getLinks().size(); i++) {
-			//Equalnames: Bijektiv machen(mit gleichem supname)
-			if(actual.getLinks().get(i).getType()==(byte)0) {
-				list.get(search(actual.getLinks().get(i).getName())).addLinks(new LinkedString(actual.getName(), (byte)0));
-			}
-			//Crossnames: Bijektiv machen
-			if(actual.getLinks().get(i).getType()==(byte)2) {
-				list.get(search(actual.getLinks().get(i).getName())).addLinks(new LinkedString(actual.getName(), (byte)2));
-			}
+		if(link.getType()==(byte)0) {
+			//Bijektion des Links auch löschen
+			list.get(search(link.getName())).removeOnlyThisLink(actual.getName());
 		}
 	}
-	*/
-	/*
-	public void changeLinksName(Linked before, Linked actual) {
-		if(!before.getName().equals(actual.getName())) {
-			for(int i=0; i<list.size(); i++) {
-				for(int j=0; j<list.get(i).getLinks().size(); j++) {
-					if(list.get(i).getLinks().get(j).getName().equals(before.getName())) {
-						list.get(i).setLinks(j, new LinkedString(actual.getName(), list.get(i).getLinks().get(j).getType()));
-					}
-				}
-			}
-		}
-	}
-	*/
 	
-	//Sinn davon?
-	public void changeLinksName(Linked before, Linked actual) {
-		if(!before.getName().equals(actual.getName())) {
-			for(int i=0; i<list.size(); i++) {
-				for(int j=0; j<list.get(i).getLinks().size(); j++) {
-					if(list.get(i).getLinks().get(j).equals(before.getName())) {
-						list.get(i).setLink(j, new LinkedString(actual.getName(), (byte)0));
-					}
+	public void removeLink(Linked actual, int pos) {
+		removeLink(list.get(search(actual.getName())), list.get(search(actual.getName())).getLinks().get(pos));
+	}
+	
+	public void addLink(Linked actual, LinkedString connection) {
+		//Bedingung dafür, dass Link hinzugefügt wird
+		if(actual.getName()=="Mathematik" || connection.getName().equals(actual.getName()) || list.get(search(actual.getName())).getLinks().contains(connection)) {
+			return;
+		}
+		//Link hinzufügen
+		list.get(search(actual.getName())).addOnlyThisLink(connection);
+		//Eventuell weitere Links hinzufügen
+		if(connection.getType()==(byte)0) {
+			list.get(search(connection.getName())).addOnlyThisLink(new LinkedString(actual.getName(), (byte)0));
+		}
+	}
+	
+	public void setLinkedsName(Linked actual, String newname) {	
+		String oldname=actual.getName();
+		list.get(search(actual.getName())).setOnlyThisName(newname);
+		
+		//Namen in allen Links ändern
+		for(int i=0; i<list.size(); i++) {
+			for(int j=0; j<list.get(i).getLinks().size(); j++) {
+				System.out.println("Vergleich: "+list.get(i).getLinks().get(j).getName()+" vs "+oldname);
+				if(list.get(i).getLinks().get(j).getName().equals(oldname)) {
+					System.out.println(oldname+"->"+newname+"; Zu löschen: Link "+list.get(i).getLinks().get(j).getName()+" in "+list.get(i).getName());
+					byte type=list.get(i).getLinks().get(j).getType();
+					list.get(i).removeOnlyThisLink(list.get(i).getLinks().get(j).getName());
+					list.get(i).addOnlyThisLink(new LinkedString(newname, type));
 				}
 			}
 		}

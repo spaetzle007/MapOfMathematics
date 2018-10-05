@@ -19,33 +19,22 @@ public class LatexText {
 	String text;	//Text liegt normal vor: Leerzeichen mit \\
 	
 	public LatexText() {
-		text="";
+		text="\\textbf{}";
 	}
 	/**
 	 * Übergebener integer type ist Typ des eingegebenen Formats: 
 	 * 0=aus Datei ausgelesen
 	 * 3=Aus MOMEdit.EditMode ausgelesen
-	 * 4=Verwendet bei Konvertierung von altem Dateiformat zu neuem; nicht berücksichtigen
 	 */
 	public LatexText(String str, int type) {
-		if(type==0) {	//Einlesen aus Datei
+		if(type==0) {			//Einlesen aus Datei
 			text=str;
 		} else if(type==3) {	//Einlesen aus EditMode
 			text=str.replace("\n", "\\\\");
-		} else if(type==2) {	
-			String output = str;
-			if(output.length()<1) {
-				output="";;
-			} else {
-				output=output.substring(6, output.length()-1);
-				output = output.replace("}\\\\\\text{", "\\\\");
-			}
-			text= str.replace("\n", "\\\\");
-		}	
+		} 
 	}
 	
-	public String getText() {return text;}
-	public void setText(String str) {text=str;}
+	public String getStandardRepresentation() {return text;}
 	/**
 	 * JLatexMath-Darstellung des Texts (für Verwendung in Desktop-App)
 	 */

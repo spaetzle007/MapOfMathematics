@@ -13,7 +13,7 @@ public class Linked {
 	public Linked() {
 		name = "";
 		text = new LatexText("", 0);
-		suplink="";
+		suplink="Mathematik";
 		links=new ArrayList<LinkedString>();
 	}
 
@@ -38,41 +38,31 @@ public class Linked {
 	}
 
 	public String getName() {return name;}
-	public void setName(String name) {this.name = name;}
+	public void setNameForStandAlone(String str) {name=str;}	//Nur für alleinstehende Linkeds
+	void setOnlyThisName(String name) {this.name = name;}	//Paketsicherheit->Zugriff nur von LinkedList
 	
 	public LatexText getLatexText() {return text;}
 	public void setLatexText(LatexText text) {this.text = text;}
-	public String getText() {return text.getText();}
+	public String getStandardRepresentation() {return text.getStandardRepresentation();}
 	public String getJLatexMathRepresentation() {return text.getJLatexMathRepresentation();}
 	public String getLatexViewRepresentation() {return text.getLatexViewRepresentation();}
 	public String getEditModeRepresentation() {return text.getEditModeRepresentation();}
 	
 	public String getSupLink() {return suplink;}
-	public void setSupLink(String str) {suplink=str;}
+	public void setSupLink(String sup) {suplink=sup;}
 	
 	public ArrayList<LinkedString> getLinks() {return links;}
 	public void setLinks(ArrayList<LinkedString> bsp) {this.links=bsp;}
-	public void removeLink(String connection) {
+	void removeOnlyThisLink(String str) {		//Paketsicherheit->Zugriff nur von LinkedList
 		for(int i=0; i<links.size(); i++) {
-			//if(links.get(i).getString().equals(connection)) {
-			if(links.get(i).equals(connection)) {
+			if(links.get(i).getName().equals(str)) {
 				links.remove(i);
 			}
 		}
 	}
-	public void removeLink(int pos) {this.links.remove(pos);}
-	public void setLink(int i, LinkedString str) {links.set(i, str);}
-	public void addLink(LinkedString connection) {
-		boolean übernehmen=true;
-		
-		if(name=="Mathematik" || connection.getName().equals(name) || links.contains(connection)) {
-			übernehmen=false;
-		}
-			
-		if(übernehmen) {
-			this.links.add(connection);
-		}
-	}
+	void addOnlyThisLink(LinkedString str) {links.add(str);}	//Paketsicherheit->Zugriff nur von LinkedList
+	void setOnlyThisLink(int i,LinkedString str) {links.set(i, str);}	//Paketsicherheit->Zugriff nur von LinkedList
+	//Öffentliche remove-Methoden, add-Methode, set-Methode für Links in LinkedList
 	public boolean hasLink(LinkedString name) {
 		boolean ret=false;
 		for(int i=0; i<links.size(); i++) {
@@ -83,13 +73,20 @@ public class Linked {
 		return ret;
 	}
 	public void clearLinks() {this.links.clear();}
-
+	int searchLink(String str) {
+		for(int i=0; i<links.size(); i++) {
+			if(links.get(i).getName().equals(str)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 	
 	public String convertToXML() {
 		String ret="";
 		ret+="\t<Linked>\n";
 		ret+="\t\t<title>"+name+"</title>\n";
-		ret+="\t\t<text>"+text.getText()+"</text>\n";
+		ret+="\t\t<text>"+text.getStandardRepresentation()+"</text>\n";
 		ret+="\t\t<suplink>"+suplink+"</suplink>\n";
 		for(int i=0; i<links.size(); i++) {
 			ret+="\t\t<link>"+links.get(i).getName()+";"+links.get(i).getType()+"</link>\n";
