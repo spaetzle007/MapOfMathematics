@@ -28,8 +28,8 @@ public class DataHandler {
 	//private final String path = "/media/jonas/OS/Users/Jonas Spinner/Documents/Studium/MapOfMathematics/MOM.dat";
 	private final String sicherung1 = "/media/jonas/OS/Users/Jonas Spinner/Documents/Studium/MapOfMathematics/Sicherung/MOMSicherung";
 	private final String sicherung2 = ".xml";
-	//private final String path="MOM.txt";
-	private final String database="MOM.xml";
+	private final String database ="MOM.xml";
+	private  String databaseOnSystem;
 	private final String übergangslösung="übergang.xml";
 	
 	private String dateCode;
@@ -46,6 +46,10 @@ public class DataHandler {
 	 * Initialisiert dateCode
 	 */
 	public DataHandler() throws AccessException {
+		//Gewünschter Speicherort bestimmen
+		databaseOnSystem=cutLast(DataHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath())+File.separator+database;
+		System.out.println(databaseOnSystem);
+		
 		if(hasText()) {
 			String text=getText();
 			dateCode=text.substring(text.length()-lengthDateCode, text.length());
@@ -61,12 +65,19 @@ public class DataHandler {
 	 * Text auslesen
 	 * Routine-Download ausführen, Text einlesen, dateCode entfernen
 	 */
-	public String getMOMText() throws AccessException{
+	public String getMOMText() throws AccessException {
 		try {
 			downloadText();	//routine drin->wegmachen
 			//routine();
-		} catch(DbxException | IOException f) {
+		} catch(FileNotFoundException f) {
+			f.printStackTrace();
+			throw new AccessException("MOM.xml kann nicht gefunden werden");
+		} catch(DbxException f) {
+			f.printStackTrace();
 			throw new AccessException("Kein Internetzugang");
+		} catch(IOException f) {
+			f.printStackTrace();
+			throw new AccessException("Problem bei Zugriff auf Datei");
 		}
 		
 		String text=getText();
@@ -95,9 +106,7 @@ public class DataHandler {
        
 		Files.delete(Paths.get(übergangslösung));
 		
-		BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(database), StandardCharsets.UTF_8));
-		out.write(input+dateCode);
-		out.close();
+		saveText(input+dateCode);
 	}
 	/**
 	 * Falls Sicherungspfad existiert, sicherungskopie erstellen
@@ -157,7 +166,7 @@ public class DataHandler {
 	 */
 	private void saveText(String code) {
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(database), StandardCharsets.UTF_8));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(databaseOnSystem), StandardCharsets.UTF_8));
 			out.write(code);
 			out.close();
 		} catch (Exception e) {
@@ -169,9 +178,11 @@ public class DataHandler {
 	 * Downloads the File, add dateCode 
 	 */
 	private void downloadText() throws NetworkIOException, FileNotFoundException, DbxException, IOException {
+		
 		DbxDownloader<FileMetadata> downloader = client.files().download("/"+database);
 		
-		FileOutputStream out = new FileOutputStream(database);
+		new File(databaseOnSystem).createNewFile();
+		FileOutputStream out = new FileOutputStream(databaseOnSystem);
         downloader.download(out);
         out.close();
 		
@@ -188,7 +199,7 @@ public class DataHandler {
 	private String getText() {
 		String code="";
 		try {
-			BufferedReader read=new BufferedReader(new InputStreamReader(new FileInputStream(database), StandardCharsets.UTF_8));
+			BufferedReader read=new BufferedReader(new InputStreamReader(new FileInputStream(databaseOnSystem), StandardCharsets.UTF_8));
 			//BufferedReader read=new BufferedReader(new FileReader(database));
 			//BufferedReader read=new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(database)));
 			String subcode;
@@ -208,7 +219,7 @@ public class DataHandler {
 	 */
 	private boolean hasText() {
 		boolean exists=false;
-		File f = new File(database);
+		File f = new File(databaseOnSystem);
 		if(f.exists()) {
 			exists=true;
 		}
@@ -222,5 +233,16 @@ public class DataHandler {
 		if(now.getDay()<10) {futDC+="0";}
 		futDC+=now.getDay()+">";
 		return futDC;
+	}
+	private String cutLast(String str) {
+		String ret=str;
+
+		while(ret.length()>0) {
+			ret=ret.substring(0, ret.length()-1);
+			if(str.charAt(ret.length()-1)==File.separatorChar) {
+				break;
+			}
+		}
+		return ret;
 	}
 }
