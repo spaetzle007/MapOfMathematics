@@ -100,9 +100,7 @@ public class LinkedList {
 		//Namen in allen Links ändern
 		for(int i=0; i<list.size(); i++) {
 			for(int j=0; j<list.get(i).getLinks().size(); j++) {
-				System.out.println("Vergleich: "+list.get(i).getLinks().get(j).getName()+" vs "+oldname);
 				if(list.get(i).getLinks().get(j).getName().equals(oldname)) {
-					System.out.println(oldname+"->"+newname+"; Zu löschen: Link "+list.get(i).getLinks().get(j).getName()+" in "+list.get(i).getName());
 					byte type=list.get(i).getLinks().get(j).getType();
 					list.get(i).removeOnlyThisLink(list.get(i).getLinks().get(j).getName());
 					list.get(i).addOnlyThisLink(new LinkedString(newname, type));
