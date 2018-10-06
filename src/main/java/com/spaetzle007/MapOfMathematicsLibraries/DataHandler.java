@@ -48,7 +48,6 @@ public class DataHandler {
 	public DataHandler() throws AccessException {
 		//Gewünschter Speicherort bestimmen
 		databaseOnSystem=cutLast(DataHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath())+File.separator+database;
-		System.out.println(databaseOnSystem);
 		
 		if(hasText()) {
 			String text=getText();
