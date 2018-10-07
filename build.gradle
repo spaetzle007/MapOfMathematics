@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'java-library'
+
+group = 'com.spaetzle007'
+version = '1.0.0'
+
+description = "MapOfMathematicsLibraries"
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'com.dropbox.core', name: 'dropbox-core-sdk', version:'3.0.8'
+    compile group: 'org.scilab.forge', name: 'jlatexmath', version:'1.0.7'
+}
