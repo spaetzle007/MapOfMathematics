@@ -25,10 +25,10 @@ public class LinkedList {
 	/**
 	 * Speichert LinkedList in Datei
 	 */
-	public void saveList() throws DeleteErrorException, DbxException, IOException{
+	public void saveList() throws  AccessException {
 		droppi.uploadMOMtext(convertToXML());
 	}
-	public void sicherungskopie() {
+	public void sicherungskopie() throws AccessException  {
 		droppi.sicherungskopie();
 	}
 	

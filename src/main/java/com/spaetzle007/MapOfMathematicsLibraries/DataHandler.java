@@ -21,6 +21,7 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.NetworkIOException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.DeleteErrorException;
+import com.dropbox.core.v2.files.DownloadErrorException;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
 
@@ -65,19 +66,9 @@ public class DataHandler {
 	 * Routine-Download ausführen, Text einlesen, dateCode entfernen
 	 */
 	public String getMOMText() throws AccessException {
-		try {
-			downloadText();	//routine drin->wegmachen
-			//routine();
-		} catch(FileNotFoundException f) {
-			f.printStackTrace();
-			throw new AccessException("MOM.xml kann nicht gefunden werden");
-		} catch(DbxException f) {
-			f.printStackTrace();
-			throw new AccessException("Kein Internetzugang");
-		} catch(IOException f) {
-			f.printStackTrace();
-			throw new AccessException("Problem bei Zugriff auf Datei");
-		}
+
+		downloadText();	//routine drin->wegmachen
+		//routine();
 		
 		String text=getText();
 		text=text.substring(0, text.length()-lengthDateCode);
@@ -87,7 +78,7 @@ public class DataHandler {
 	 * Text einlesen
 	 * Text speichern und dann hochladen
 	 */
-	public void uploadMOMtext(String text) throws DbxException, IOException, DeleteErrorException {
+	public void uploadMOMtext(String text) throws AccessException {
 		String input=text;
 		try {
 			BufferedWriter out=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(übergangslösung), StandardCharsets.UTF_8));
@@ -97,20 +88,41 @@ public class DataHandler {
 			e.printStackTrace();
 		}
 		
-		@SuppressWarnings("deprecation")
-		Metadata meta = client.files().delete("/"+database);
+		try {
+			@SuppressWarnings("deprecation")
+			Metadata meta = client.files().delete("/"+database);	//DeleteErrorException and DbxException
+		} catch(DeleteErrorException e) {
+			throw new AccessException("Fehler beim Löschen\nder Datei in Dropbox");
+		} catch (DbxException e) {
+			throw new AccessException("Fehler hat was\nmit Dropbox zu tun");
+		}
 		
-		InputStream in = new FileInputStream(übergangslösung);
-        FileMetadata metadata = client.files().uploadBuilder("/"+database).uploadAndFinish(in);
+		InputStream in;
+		try {
+			in = new FileInputStream(übergangslösung);
+		} catch (FileNotFoundException e) {
+			throw new AccessException("Lokale Speicherdatei MOM.xml\\nnicht gefunden");
+		}
+        try {
+			FileMetadata metadata = client.files().uploadBuilder("/"+database).uploadAndFinish(in);
+		} catch (DbxException e) {
+			throw new AccessException("Fehler beim Upload:\nDropbox liest falsch");
+		} catch(IOException e) {
+			throw new AccessException("Fehler beim Upload:\nLesen der lokal gespeicherten Daten");
+		}
        
-		Files.delete(Paths.get(übergangslösung));
+		try {
+			Files.delete(Paths.get(übergangslösung));
+		} catch (IOException e) {
+			throw new AccessException("Fehler beim löschen der\nlokalen Zwischenspeicherungsdatei");
+		}
 		
 		saveText(input+dateCode);
 	}
 	/**
 	 * Falls Sicherungspfad existiert, sicherungskopie erstellen
 	 */
-	public void sicherungskopie() {
+	public void sicherungskopie() throws AccessException{
 		File bsp=new File(sicherung1+"0"+sicherung2);
 		if(!bsp.exists()) {
 			return;
@@ -136,7 +148,7 @@ public class DataHandler {
 	 * Routine: 
 	 * Erstdownload prüfen, dateCode prüfen und evtl Folgedownload
 	 */
-	private void routine() throws NetworkIOException, FileNotFoundException, DbxException, IOException {
+	private void routine() throws AccessException {
 		if(!hasText()) {
 			downloadText();
 			return;
@@ -163,29 +175,57 @@ public class DataHandler {
 	 * Creates a File with the given String
 	 * Datecode muss vorher schon implementiert worden sein
 	 */
-	private void saveText(String code) {
+	private void saveText(String code) throws AccessException {
 		try {
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(databaseOnSystem), StandardCharsets.UTF_8));
 			out.write(code);
 			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			throw new AccessException("Lokale Speicherdatei MOM.xml\nnicht gefunden");
+		} catch(SecurityException e) {
+			throw new AccessException("Security-Manager im System verhindert das Schreiben\nin lokale Speicherdatei");
+		} catch(IOException e) {
+			throw new AccessException("Fehler beim Schreiben in\nlokale Speicherdatei");
 		}
 	}
 	
 	/**
 	 * Downloads the File, add dateCode 
 	 */
-	private void downloadText() throws NetworkIOException, FileNotFoundException, DbxException, IOException {
+	private void downloadText() throws AccessException {
+		DbxDownloader<FileMetadata> downloader;
+		try {
+			downloader= client.files().download("/"+database);	//DownloadErrorException and DbxException by .download()
+		} catch(DownloadErrorException e) {
+			throw new AccessException("Fehler beim Download\nvon Dropbbox");
+		} catch(DbxException e) {
+			throw new AccessException("Fehler hat was\nmit Dropbox zu tun");
+		}
+		try {
+			new File(databaseOnSystem).createNewFile();	//IOException and SecurityException by .createNewFile()
+		} catch(SecurityException e) {
+			throw new AccessException("Security-Manager im System\nverhindert das Erstellen\neiner lokalen Speicherdatei");
+		} catch(IOException e) {
+			throw new AccessException("Fehler beim Erstellen\neiner lokalen Speicherdatei");
+		}
+		FileOutputStream out;
+		try {
+			 out= new FileOutputStream(databaseOnSystem);	//FileNotFoundException and SecurityException
+		} catch(FileNotFoundException e) {
+			throw new AccessException("Lokale Speicherdatei MOM.xml\nnicht gefunden");
+		}
 		
-		DbxDownloader<FileMetadata> downloader = client.files().download("/"+database);
+        try {
+			downloader.download(out);
+			out.close();
+		} catch (DbxException e) {
+			throw new AccessException("Fehler hat was\nmit Dropbox zu tun");
+		} catch(IOException e) {
+			throw new AccessException("Fehler beim Schreiben\ndes Downloads in Datei");
+		}
+         
 		
-		new File(databaseOnSystem).createNewFile();
-		FileOutputStream out = new FileOutputStream(databaseOnSystem);
-        downloader.download(out);
-        out.close();
-		
-		String text=getText();
+		String text=getText();	
 		//add DateCode
 		dateCode=getDateCode();
 		
@@ -195,21 +235,25 @@ public class DataHandler {
 	/**
 	 * Reads the File
 	 */
-	private String getText() {
+	private String getText() throws AccessException {
 		String code="";
+		BufferedReader read;
 		try {
-			BufferedReader read=new BufferedReader(new InputStreamReader(new FileInputStream(databaseOnSystem), StandardCharsets.UTF_8));
-			//BufferedReader read=new BufferedReader(new FileReader(database));
-			//BufferedReader read=new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(database)));
-			String subcode;
-			while((subcode = read.readLine())!=null) {
+			read=new BufferedReader(new InputStreamReader(new FileInputStream(databaseOnSystem), StandardCharsets.UTF_8)); //FileNotFoundException
+		} catch(FileNotFoundException e) {
+			throw new AccessException("Lokale Datei MOM.xml\nwird nicht gefunden");
+		}
+		String subcode;
+		try {
+			while((subcode = read.readLine())!=null) {	//IOException 
 				code+="\n"+subcode;
 			}
 			
 			read.close();
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(IOException e) {
+			throw new AccessException("Fehler beim Auslesen\naus lokaler Datei MOM.xml");
 		}
+		
 		
         return code;
 	}
@@ -226,11 +270,13 @@ public class DataHandler {
 	}
 	private String getDateCode() {
 		Date now = new Date();
+		
 		String futDC="<"+now.getYear()+".";
 		if(now.getMonth()<10) {futDC+="0";}
 		futDC+=now.getMonth()+".";
 		if(now.getDay()<10) {futDC+="0";}
 		futDC+=now.getDay()+">";
+		
 		return futDC;
 	}
 	private String cutLast(String str) {
