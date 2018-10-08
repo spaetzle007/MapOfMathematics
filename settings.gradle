@@ -1,1 +1,2 @@
+include ':MapOfMathematicsAndroid'
 rootProject.name = 'MapOfMathematicsLibraries'

@@ -2,3 +2,8 @@
 MOM.xml
 /.gradle/
 /build/
+/gradle/
+/MapOfMathematicsAndroid/
+/.idea/
+MapOfMathematicsLibraries.iml
+local.properties

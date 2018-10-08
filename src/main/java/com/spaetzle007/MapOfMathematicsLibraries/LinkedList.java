@@ -12,8 +12,8 @@ public class LinkedList {
 	/**
 	 * Konstruktor, der Datei einliest und LinkedList dementsprechend erstellt
 	 */
-	public LinkedList() throws AccessException, LinkedParseException {
-		droppi=new DataHandler();
+	public LinkedList(String database) throws AccessException, LinkedParseException {
+		droppi=new DataHandler(database);
 		String code = droppi.getMOMText();
 		
 		list = new ArrayList<Linked>();

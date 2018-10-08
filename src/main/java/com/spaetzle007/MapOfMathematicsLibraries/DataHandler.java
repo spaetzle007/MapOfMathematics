@@ -46,10 +46,9 @@ public class DataHandler {
 	 * Initialisiert DbxClientV2
 	 * Initialisiert dateCode
 	 */
-	public DataHandler() throws AccessException {
+	public DataHandler(String database) throws AccessException {
 		//Gewünschter Speicherort bestimmen
-		databaseOnSystem=cutLast(DataHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath())+File.separator+database;
-		
+		databaseOnSystem=database; //cutLast(DataHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath())+File.separator+database;
 		if(hasText()) {
 			String text=getText();
 			dateCode=text.substring(text.length()-lengthDateCode, text.length());
@@ -67,8 +66,8 @@ public class DataHandler {
 	 */
 	public String getMOMText() throws AccessException {
 
-		downloadText();	//routine drin->wegmachen
-		//routine();
+		//downloadText();	//routine drin->wegmachen
+		routine();
 		
 		String text=getText();
 		text=text.substring(0, text.length()-lengthDateCode);
@@ -150,6 +149,7 @@ public class DataHandler {
 	 */
 	private void routine() throws AccessException {
 		if(!hasText()) {
+			System.out.println("Servsu1");
 			downloadText();
 			return;
 		}
@@ -239,7 +239,8 @@ public class DataHandler {
 		String code="";
 		BufferedReader read;
 		try {
-			read=new BufferedReader(new InputStreamReader(new FileInputStream(databaseOnSystem), StandardCharsets.UTF_8)); //FileNotFoundException
+			File sample=new File(databaseOnSystem);
+			read=new BufferedReader(new InputStreamReader(new FileInputStream(sample), StandardCharsets.UTF_8)); //FileNotFoundException
 		} catch(FileNotFoundException e) {
 			throw new AccessException("Lokale Datei MOM.xml\nwird nicht gefunden");
 		}
@@ -279,7 +280,7 @@ public class DataHandler {
 		
 		return futDC;
 	}
-	private String cutLast(String str) {
+	public static String cutLast(String str) {
 		String ret=str;
 
 		while(ret.length()>0) {
