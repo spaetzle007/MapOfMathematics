@@ -56,7 +56,7 @@ public class LatexText {
 	/**
 	 * LaTeXView-Darstellung des Texts (für Verwendung in Android-App)
 	 */
-	public String getLatexViewRepresentation() {
+	public String getMathViewRepresentation() {
 		//Ersetze in text $...$ durch \\(...\\)
 		String bau=text;
 		boolean drin=false;
@@ -77,7 +77,9 @@ public class LatexText {
 		//In array-Umgebung verpacken
 		
 		System.out.println("Erste Ersetzung: "+bau);
-		String ret="\\text{"+replaceExceptOfBeginEnd(bau, "}\\\\\\text{")+"}";
+		String ret="\\( \\begin{array}{c}\\text{";
+		ret+=replaceExceptOfBeginEnd(bau, "}\\\\\\text{");
+		ret+="} \\end{array} \\)";
 		System.out.println("Fertig: "+ret);
 		return ret;
 	}

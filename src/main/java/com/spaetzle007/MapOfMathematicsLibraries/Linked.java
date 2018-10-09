@@ -45,7 +45,7 @@ public class Linked {
 	public void setLatexText(LatexText text) {this.text = text;}
 	public String getStandardRepresentation() {return text.getStandardRepresentation();}
 	public String getJLatexMathRepresentation() {return text.getJLatexMathRepresentation();}
-	public String getLatexViewRepresentation() {return text.getLatexViewRepresentation();}
+	public String getMathViewRepresentation() {return text.getMathViewRepresentation();}
 	public String getEditModeRepresentation() {return text.getEditModeRepresentation();}
 	
 	public String getSupLink() {return suplink;}
