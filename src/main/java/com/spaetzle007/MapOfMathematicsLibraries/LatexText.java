@@ -61,7 +61,7 @@ public class LatexText {
 		String bau=text;
 		boolean drin=false;
 		int i=0;
-		System.out.println("Anfang: "+bau);
+		//Formelnmarkierung ändern
 		do {
 			if(bau.charAt(i)=='$') {
 				if(drin) {
@@ -74,13 +74,35 @@ public class LatexText {
 			}
 			i++;
 		} while(i<bau.length());
+
+		//textbf entfernen
+        i=0;
+        while(i<bau.length()-"\\textbf{".length()) {
+            if(bau.substring(i, i+"\\textbf{".length()).equals("\\textbf{")) {
+                bau=bau.substring(0, i)+bau.substring(i+"\\textbf{".length(), bau.length());
+                int klammerauf=0;
+                while(i<bau.length()) {
+                	if(bau.charAt(i)=='{') {klammerauf++;}
+                    if(bau.charAt(i)=='}') {
+                		if(klammerauf==0) {
+							bau=bau.substring(0, i)+bau.substring(i+1, bau.length());
+							break;
+						} else {
+                			klammerauf--;
+						}
+
+                    }
+                    i++;
+                }
+            }
+            i++;
+        }
+
 		//In array-Umgebung verpacken
-		
-		System.out.println("Erste Ersetzung: "+bau);
-		String ret="\\( \\begin{array}{c}\\text{";
+		String ret="\\( \\begin{array}{l} \\text{";
 		ret+=replaceExceptOfBeginEnd(bau, "}\\\\\\text{");
 		ret+="} \\end{array} \\)";
-		System.out.println("Fertig: "+ret);
+		ret=ret.replace("\\[", "").replace("\\[", "");
 		return ret;
 	}
 	
