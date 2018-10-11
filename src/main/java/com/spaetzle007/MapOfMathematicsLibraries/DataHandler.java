@@ -194,7 +194,6 @@ public class DataHandler {
 	private void downloadText() throws AccessException {
 		DbxDownloader<FileMetadata> downloader;
 		try {
-			System.out.println("/"+database);
 			downloader= client.files().download("/"+database);	//DownloadErrorException and DbxException by .download()
 		} catch(DownloadErrorException e) {
 			throw new AccessException("Fehler beim Download\nvon Dropbbox");
@@ -289,12 +288,10 @@ public class DataHandler {
 	 */
 	public static String cutLast(String str, int cuts) {
 		String ret=str;
-		System.out.println("Input:  "+str);
 		if(ret.charAt(ret.length()-1)==File.separatorChar) {ret=ret.substring(0, ret.length()-1);}
 		int committed=0;
 		int i=ret.length()-1;
 		while(i>=0 && committed<cuts) {		// "/"(Root)-Verzeichnis immer drin haben
-			//System.out.println(i+"; "+ret.length());
 			if(str.charAt(i)==File.separatorChar || str.charAt(i)=='/') {
 				ret=ret.substring(0, i);
 				committed++;
@@ -307,7 +304,6 @@ public class DataHandler {
 			case '\\':	ret="C:/";
 			}
 		}
-		System.out.println("Output: "+ret);
 		return ret;
 	}
 }
