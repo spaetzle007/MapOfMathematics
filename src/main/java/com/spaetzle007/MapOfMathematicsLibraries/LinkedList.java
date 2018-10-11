@@ -31,7 +31,15 @@ public class LinkedList {
 	public void sicherungskopie() throws AccessException  {
 		droppi.sicherungskopie();
 	}
-	
+	public Linked getOriginLinked() {
+		Linked originLinked = new Linked();
+		for (Linked Linked : list) {
+			if (Linked.getSupLink().equals(Linked.getName())){
+				originLinked = Linked;
+			}
+		}
+		return originLinked;
+	}
 	public Linked get(int i) {return list.get(i);}
 	public void add(Linked link) {list.add(link);}
 	public void set(int pos, Linked link) {list.set(pos, link);}
@@ -108,6 +116,7 @@ public class LinkedList {
 			}
 		}
 	}
+	
 	
 	public String convertToXML() {
 		String ret="";
