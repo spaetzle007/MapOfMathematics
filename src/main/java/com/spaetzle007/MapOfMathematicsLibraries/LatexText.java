@@ -61,9 +61,13 @@ public class LatexText {
 		String bau=text;
 		boolean drin=false;
 		int i=0;
+		int size=bau.length();
 		//Formelnmarkierung ändern
-		do {
+		while(true) {
+			if(size==i) {break;}
+			//System.out.println(bau.charAt(i));
 			if(bau.charAt(i)=='$') {
+				//System.out.println("Position: "+i+"; drumrum: "+bau.substring(i-5, i));
 				if(drin) {
 					bau=bau.substring(0, i)+"\\)"+bau.substring(i+1, bau.length());
 				} else {
@@ -73,7 +77,8 @@ public class LatexText {
 				drin=!drin;
 			}
 			i++;
-		} while(i<bau.length());
+			size=bau.length();
+		}
 
 		//textbf entfernen
         i=0;
@@ -102,7 +107,7 @@ public class LatexText {
 		String ret="\\( \\begin{array}{l} \\text{";
 		ret+=replaceExceptOfBeginEnd(bau, "}\\\\\\text{");
 		ret+="} \\end{array} \\)";
-		ret=ret.replace("\\[", "").replace("\\[", "");
+		ret=ret.replace("\\[", "").replace("\\]", "");
 		return ret;
 	}
 	
