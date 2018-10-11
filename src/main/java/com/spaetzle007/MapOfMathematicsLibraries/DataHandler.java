@@ -149,7 +149,6 @@ public class DataHandler {
 	 */
 	private void routine() throws AccessException {
 		if(!hasText()) {
-			System.out.println("Servsu1");
 			downloadText();
 			return;
 		}
@@ -195,19 +194,24 @@ public class DataHandler {
 	private void downloadText() throws AccessException {
 		DbxDownloader<FileMetadata> downloader;
 		try {
+			System.out.println("/"+database);
 			downloader= client.files().download("/"+database);	//DownloadErrorException and DbxException by .download()
 		} catch(DownloadErrorException e) {
 			throw new AccessException("Fehler beim Download\nvon Dropbbox");
 		} catch(DbxException e) {
 			throw new AccessException("Fehler hat was\nmit Dropbox zu tun");
 		}
-		try {
-			new File(databaseOnSystem).createNewFile();	//IOException and SecurityException by .createNewFile()
-		} catch(SecurityException e) {
-			throw new AccessException("Security-Manager im System\nverhindert das Erstellen\neiner lokalen Speicherdatei");
-		} catch(IOException e) {
-			throw new AccessException("Fehler beim Erstellen\neiner lokalen Speicherdatei");
+		if(!hasText()) {
+			try {
+				new File(databaseOnSystem).createNewFile();	//IOException and SecurityException by .createNewFile()
+			} catch(SecurityException e) {
+				throw new AccessException("Security-Manager im System\nverhindert das Erstellen\neiner lokalen Speicherdatei");
+			} catch(IOException e) {
+				e.printStackTrace();
+				throw new AccessException("Fehler beim Erstellen\neiner lokalen Speicherdatei");
+			}
 		}
+		
 		FileOutputStream out;
 		try {
 			 out= new FileOutputStream(databaseOnSystem);	//FileNotFoundException and SecurityException
@@ -280,15 +284,30 @@ public class DataHandler {
 		
 		return futDC;
 	}
-	public static String cutLast(String str) {
+	/**
+	 * Given a path, this methode cuts the last File.seperatorChar and the last "cuts" directories
+	 */
+	public static String cutLast(String str, int cuts) {
 		String ret=str;
-
-		while(ret.length()>0) {
-			ret=ret.substring(0, ret.length()-1);
-			if(str.charAt(ret.length()-1)==File.separatorChar) {
-				break;
+		System.out.println("Input:  "+str);
+		if(ret.charAt(ret.length()-1)==File.separatorChar) {ret=ret.substring(0, ret.length()-1);}
+		int committed=0;
+		int i=ret.length()-1;
+		while(i>=0 && committed<cuts) {		// "/"(Root)-Verzeichnis immer drin haben
+			//System.out.println(i+"; "+ret.length());
+			if(str.charAt(i)==File.separatorChar || str.charAt(i)=='/') {
+				ret=ret.substring(0, i);
+				committed++;
+			}
+			i--;
+		}
+		if(i==0) {
+			switch(File.separatorChar) {
+			case '/':	ret="/";
+			case '\\':	ret="C:/";
 			}
 		}
+		System.out.println("Output: "+ret);
 		return ret;
 	}
 }
