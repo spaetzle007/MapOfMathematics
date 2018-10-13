@@ -206,7 +206,6 @@ public class DataHandler {
 			} catch(SecurityException e) {
 				throw new AccessException("Security-Manager im System\nverhindert das Erstellen\neiner lokalen Speicherdatei");
 			} catch(IOException e) {
-				e.printStackTrace();
 				throw new AccessException("Fehler beim Erstellen\neiner lokalen Speicherdatei");
 			}
 		}
