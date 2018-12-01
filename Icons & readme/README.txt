@@ -50,12 +50,18 @@ Programmende
 
 -----------------------------Tipps fürs Erstellen und Bearbeiten von Einträgen------------------------------------------
 GuideLines für Einträge:
--Eindeutige Titel für Einträge verwenden(Keine doppelten Titel)
--Zeilenumbrüche so setzen, dass kompletter Text im Bild ist
--Überschriften mit "\textbf{überschrift}" für jeden Textabschnitt
+-"Stichpunktprinzip"
+-Inhalte der Einträge: 
+ -Definitionen
+ -Intuition(Verknüpfung zu anderen Themen, verschiedene Herangehensweisen)
+ -Algorithmen für typische, verwandte Aufgabenstellungen
+-Eindeutige Titel für Einträge verwenden - Keine doppelten Titel
+-Zeilenumbrüche so setzen, dass kompletter Text im Bild ist, wenn man im "Halbe-Seite-Mode" ist
+-Überschriften mit "\textbf{überschrift}" für jeden Abschnitt
 -Aufzählungen mit "-", "1.", "a)"
 -In bestehenden Einträgen nur Schreibfehler ändern - nichts vorhandenes löschen!
 -Keine Aufzählungen innerhalb von Formeln: $M\subset N, f:M\to N$ -> $M\subset N$, $f:M\to N$
+
 
 Tipps zum Erstellen neuer Einträge
 -Notwendig, dass jeder Eintrag von Anfang an einen Titel hat
@@ -64,6 +70,6 @@ Tipps zum Erstellen neuer Einträge
  -Vor jeder Zeile wird "\text{....}" ergänzt->Befinde mich die ganze Zeit im TextModus
  ->Formeln setzen mit "$....$"
 -Einstellen der Verknüpfungen
- -Auswählen des gewünschten Eintrags mit dem Cursor
+ -Auswählen des gewünschten Eintrags mit dem Cursor/Pfeiltasten
  -"SPACE"->Als übergeordneter Eintrag speichern
  -"ENTER"->Als Querverbindung speichern
