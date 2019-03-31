@@ -66,8 +66,8 @@ public class DataHandler {
 	 */
 	public String getMOMText() throws AccessException {
 
-		//downloadText();	//routine drin->wegmachen
-		routine();
+		downloadText();	//routine drin->wegmachen
+		//routine();
 		
 		String text=getText();
 		text=text.substring(0, text.length()-lengthDateCode);
